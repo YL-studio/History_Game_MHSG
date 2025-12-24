@@ -106,6 +106,38 @@
         .home-actions { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; width: 100%; max-width: 300px; margin-top: 10px; }
         .btn-start { grid-column: 1 / -1; background-color: var(--ink-black); color: var(--gold); font-size: 22px; padding: 15px; }
 
+        /* --- 考号选择方阵 (V11.0 新增) --- */
+        .id-selection-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(60px, 1fr));
+            gap: 10px;
+            width: 100%;
+            padding: 10px 5px;
+            box-sizing: border-box;
+            overflow-y: auto;
+            flex-grow: 1;
+        }
+        .id-select-btn {
+            background: #fff;
+            border: 1px solid var(--border-color);
+            padding: 12px 0;
+            font-size: 20px;
+            font-weight: bold;
+            cursor: pointer;
+            border-radius: 6px;
+            box-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+            transition: all 0.15s;
+            color: var(--ink-black);
+        }
+        .id-select-btn:hover {
+            background: var(--stamp-red);
+            color: var(--gold);
+            transform: scale(1.1);
+            box-shadow: 0 5px 10px rgba(0,0,0,0.2);
+            z-index: 10;
+            border-color: var(--stamp-red);
+        }
+
         /* --- 科目选择 --- */
         .category-grid { 
             display: flex; justify-content: center; gap: 12px; margin-top: 20px; 
@@ -156,13 +188,6 @@
         }
         .flash-progress { width: 80%; height: 6px; background: #ccc; border-radius: 3px; margin: 10px 0; overflow: hidden;}
         .flash-progress-bar { height: 100%; background: var(--purple-royal); width: 0%; transition: width 0.3s; }
-
-        /* --- 登录 --- */
-        input#student-id {
-            font-size: 24px; padding: 10px; width: 120px; text-align: center; border: 2px solid var(--border-color);
-            background: rgba(255,255,255,0.5); font-family: inherit; margin-bottom: 20px; outline: none; border-radius: 4px;
-        }
-        .error-msg { color: var(--stamp-red); height: 24px; font-size: 16px; font-weight: bold;}
 
         /* --- 考生须知 --- */
         .instruction-box {
@@ -284,6 +309,23 @@
             border-radius: 8px; z-index: 1000; font-size: 18px; pointer-events: none;
             opacity: 0; transition: opacity 0.5s; text-align: center; border: 2px solid var(--gold);
         }
+
+        /* --- 自定义模态框 (V11.1 新增) --- */
+        .modal-overlay {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.6); z-index: 2000;
+            display: none; align-items: center; justify-content: center;
+            backdrop-filter: blur(2px);
+            animation: fadeIn 0.2s;
+        }
+        .modal-content {
+            background: var(--book-page); padding: 20px; border-radius: 8px;
+            border: 2px solid var(--border-color); text-align: center;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.4); width: 85%; max-width: 320px;
+        }
+        .modal-actions {
+            display: flex; justify-content: space-around; margin-top: 20px; gap: 10px;
+        }
         
         .setting-item {
             width: 100%; background: rgba(255,255,255,0.6); padding: 15px; margin-bottom: 10px;
@@ -320,25 +362,40 @@
 
     <div id="flash-overlay"></div>
     <div id="cycle-toast">🎉 题库已刷完一轮，开启新轮回！</div>
+    
+    <!-- V11.1 新增：放弃考试确认模态框 -->
+    <div id="quit-confirm-modal" class="modal-overlay">
+        <div class="modal-content">
+            <h3 style="margin-top:0; color:var(--stamp-red);">⚠️ 确定要放弃赶考吗？</h3>
+            <p style="font-size:16px; color:var(--ink-black); opacity:0.8;">当前考试进度将丢失，连对记录也会清零。</p>
+            <div class="modal-actions">
+                <button class="btn btn-danger" onclick="executeQuit()">🏳️ 狠心放弃</button>
+                <button class="btn" onclick="closeQuitModal()" style="background:var(--jade-green); color:white;">🔙 继续答题</button>
+            </div>
+        </div>
+    </div>
 
     <div class="container">
         
+        <!-- V11.0 修改：Login Screen 移除输入框 -->
         <div id="login-screen" class="screen active" style="justify-content: center;">
             <h1 style="font-size: 36px;">国史科举 · 五经通考</h1>
             <div class="decorative-line"></div>
-            <p>请输入学号 (01-49)</p>
-            <input type="number" id="student-id" min="1" max="49" placeholder="01">
-            <div id="login-msg" class="error-msg"></div>
             
             <div class="home-actions">
-                <button class="btn btn-start" onclick="checkLoginAndShowInstructions()">✍️ 进京赶考</button>
+                <button class="btn btn-start" onclick="switchScreen('instructions-screen')">✍️ 进京赶考</button>
                 <button class="btn btn-flash" onclick="openFlashcardSelect()">🎴 知识闪卡</button>
                 <button class="btn btn-study" onclick="openStudyHub()">📖 经史典籍</button>
                 <button class="btn btn-rank" onclick="openLeaderboardOnly()">🏆 皇榜</button>
                 <button class="btn btn-mistake" onclick="openMistakeHub()">📂 错题阁</button>
                 <button class="btn btn-setting" onclick="openSettings()">⚙️ 游戏设置</button>
             </div>
-            <div style="margin-top: 20px; font-size: 12px; opacity: 0.8;"><p>上海市闵行区实验高级中学</p></div>
+            <div style="margin-top: 20px; font-size: 12px; opacity: 0.8;">
+                <p>Ver. 1.1</p>
+                <p>本版本为班级版本</p>
+                <p>上海市闵行区实验高级中学</p>
+                <p>上海普瑞赛斯文化传播有限公司版权所有</p>
+                </div>
         </div>
 
         <div id="flashcard-select-screen" class="screen" style="justify-content: center;">
@@ -400,8 +457,18 @@
                     ❤️ 来自你们25届毕业的学长：邹子俊&李易 ❤️
                 </div>
             </div>
-            <button class="btn btn-start" style="font-size:20px;" onclick="proceedToDifficulty()">吾已阅，前往选拔</button>
+            <!-- V11.0 修改：点击后跳转至考号选择页 -->
+            <button class="btn btn-start" style="font-size:20px;" onclick="initIdSelection()">吾已阅，认领考号</button>
             <div style="margin-top: 15px;"><button class="btn" onclick="switchScreen('login-screen')">返回</button></div>
+        </div>
+
+        <!-- V11.0 新增：考号选择界面 -->
+        <div id="id-selection-screen" class="screen">
+            <h2>请认领考号</h2>
+            <div class="decorative-line"></div>
+            <p style="font-size:14px; opacity:0.8; margin-bottom:5px;">请点击下方数字认领您的考号</p>
+            <div id="id-selection-grid" class="id-selection-grid"></div>
+            <div style="margin-top: 10px; margin-bottom: 20px;"><button class="btn" onclick="switchScreen('instructions-screen')">返回须知</button></div>
         </div>
 
         <div id="difficulty-screen" class="screen" style="justify-content: center;">
@@ -415,7 +482,8 @@
                 <div>🔴 殿试（难）</div>
                 <div class="diff-desc">全科混考 · 六选一 · 5秒</div>
             </div>
-            <div style="margin-top: 30px;"><button class="btn" onclick="switchScreen('instructions-screen')">返回上级</button></div>
+            <!-- V11.0 修改：返回到考号选择页 -->
+            <div style="margin-top: 30px;"><button class="btn" onclick="switchScreen('id-selection-screen')">返回重选考号</button></div>
         </div>
 
         <div id="category-screen" class="screen" style="justify-content: center;">
@@ -797,6 +865,7 @@
         let gameSettings = { immersiveFeedback: true };
         let timeLeft = 0;
         let currentRankTab = 'easy'; 
+        let isGamePaused = false; // V11.1 新增：暂停状态
 
         // V9.0 闪卡变量
         let flashcardDeck = [];
@@ -813,16 +882,26 @@
             document.getElementById(screenId).classList.add('active');
         }
 
-        function checkLoginAndShowInstructions() {
-            const input = document.getElementById('student-id');
-            const msg = document.getElementById('login-msg');
-            const val = parseInt(input.value);
-            if (!input.value.match(/^\d{2}$/) || isNaN(val) || val > 49 || val < 1) {
-                msg.innerText = "学号需为两位数字 (01-49)"; return;
+        // V11.0: 新增初始化考号选择
+        function initIdSelection() {
+            switchScreen('id-selection-screen');
+            const grid = document.getElementById('id-selection-grid');
+            grid.innerHTML = '';
+            // 生成48个考号
+            for(let i=1; i<=48; i++) {
+                let idStr = i.toString().padStart(2, '0');
+                const btn = document.createElement('div');
+                btn.className = 'id-select-btn';
+                btn.innerText = idStr;
+                btn.onclick = () => selectIdAndProceed(idStr);
+                grid.appendChild(btn);
             }
-            currentStudentId = input.value;
-            msg.innerText = "";
-            switchScreen('instructions-screen');
+        }
+
+        // V11.0: 选中考号并跳转
+        function selectIdAndProceed(id) {
+            currentStudentId = id;
+            switchScreen('difficulty-screen');
         }
 
         function proceedToDifficulty() {
@@ -922,7 +1001,7 @@
                 return;
             }
 
-            currentScore = 0; currentStreak = 0; maxStreak = 0; questionCount = 0;
+            currentScore = 0; currentStreak = 0; maxStreak = 0; questionCount = 0; isGamePaused = false;
             updateStatus(); updateTitleSeal();
             switchScreen('game-screen');
             nextQuestion();
@@ -946,7 +1025,7 @@
 
             availableQuestions = unused;
 
-            currentScore = 0; currentStreak = 0; maxStreak = 0; questionCount = 0;
+            currentScore = 0; currentStreak = 0; maxStreak = 0; questionCount = 0; isGamePaused = false;
             updateStatus(); updateTitleSeal();
             switchScreen('game-screen');
             nextQuestion();
@@ -959,10 +1038,9 @@
 
         function nextQuestion() {
             if (questionCount >= MAX_QUESTIONS) { endGame(); return; }
-            questionCount++; isAnswering = false;
+            questionCount++; isAnswering = false; isGamePaused = false;
             
             // V10.0: 检查中途题库是否用尽
-            // 如果游戏中途 availableQuestions 空了（例如只剩5题，但要玩30题），需要触发重置逻辑
             if (availableQuestions.length === 0) {
                 let dbKey = (currentDifficulty === 'hard') ? 'hard_mixed' : currentCategory;
                 
@@ -982,9 +1060,6 @@
                 } else {
                     availableQuestions = [...DATABASES[currentCategory]];
                 }
-                
-                // 为了防止刚刚答过的题目立刻出现（虽然概率低），可以简单过滤掉本次游戏session已出现的题目
-                // 这里简化处理，直接reload即可，用户体验差异不大
             }
 
             const randIndex = Math.floor(Math.random() * availableQuestions.length);
@@ -1044,6 +1119,8 @@
             text.innerText = timeLeft.toFixed(2) + "s";
 
             timerInterval = setInterval(() => {
+                if (isGamePaused) return; // 暂停逻辑
+                
                 timeLeft -= 0.01;
                 if (timeLeft < 0) timeLeft = 0;
                 text.innerText = timeLeft.toFixed(2) + "s";
@@ -1054,7 +1131,7 @@
         }
 
         function handleAnswer(btnElement, selectedAnswer) {
-            if (isAnswering) return;
+            if (isAnswering || isGamePaused) return;
             isAnswering = true; clearInterval(timerInterval);
             if (selectedAnswer === currentQuestion.a) {
                 if (gameSettings.immersiveFeedback) {
@@ -1073,17 +1150,31 @@
         }
 
         function handleTimeout() {
-            if (isAnswering) return;
+            if (isAnswering || isGamePaused) return;
             isAnswering = true; triggerRedFlash(); recordMistake(currentQuestion); currentStreak = 0; updateStatus(); updateTitleSeal();
             Array.from(document.querySelectorAll('.option-btn')).forEach(btn => { if (btn.innerText === currentQuestion.a) btn.classList.add('correct-fast'); });
             setTimeout(() => nextQuestion(), 1500);
         }
 
+        // V11.1 修改：使用自定义模态框代替 confirm
         function confirmQuit() {
-            if (confirm("⚠️ 确定要放弃本次考试吗？当前进度将丢失。")) {
-                clearInterval(timerInterval);
-                resetGame();
-            }
+            // 暂停游戏并显示模态框
+            isGamePaused = true;
+            document.getElementById('quit-confirm-modal').style.display = 'flex';
+        }
+
+        function closeQuitModal() {
+            // 恢复游戏
+            isGamePaused = false;
+            document.getElementById('quit-confirm-modal').style.display = 'none';
+        }
+
+        function executeQuit() {
+            // 确认退出
+            isGamePaused = false;
+            document.getElementById('quit-confirm-modal').style.display = 'none';
+            clearInterval(timerInterval);
+            resetGame();
         }
 
         function triggerRedFlash() {
@@ -1277,7 +1368,10 @@
         }
         function clearCurrentMistakes() { if (!confirm(`确定要清空学号 ${viewingMistakeId} 的所有错题记录吗？`)) return; const dbKey = 'history_mistakes_db'; let db = JSON.parse(localStorage.getItem(dbKey) || '{}'); delete db[viewingMistakeId]; localStorage.setItem(dbKey, JSON.stringify(db)); openMistakeDetail(viewingMistakeId); }
         function clearAllMistakes() { if (!confirm(`⚠️ 高危操作：确定要销毁【所有学号】的错题本吗？`)) return; localStorage.removeItem('history_mistakes_db'); alert("所有错题记录已销毁。"); }
-        function resetGame() { document.getElementById('student-id').value = ''; switchScreen('login-screen'); }
+        function resetGame() { 
+            clearInterval(timerInterval); 
+            switchScreen('login-screen'); 
+        }
 
         /* --- V9.0 闪卡逻辑 --- */
         function openFlashcardSelect() {
