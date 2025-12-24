@@ -1,0 +1,89 @@
+🎓 QUICK START CARD - 快速开始卡
+═══════════════════════════════════════════════════════════════════
+
+📌 WHAT IS THIS? (这是什么？)
+  你的 HTML 历史知识应用现在变成了桌面程序！
+  可在 Mac、Windows、Linux 上独立运行，无需浏览器。
+
+🎯 GET STARTED IN 3 STEPS (三步启动)
+
+  ① Install Node.js
+     从 https://nodejs.org/ 下载 LTS 版本
+
+  ② Open Terminal in this folder and run:
+     打开终端，进入项目文件夹，运行：
+     
+     npm install
+
+  ③ Start the app:
+     启动应用：
+     
+     npm start
+     
+     ✨ That's it! 应用会自动打开！
+
+📁 IMPORTANT FILES (重要文件)
+
+  main.js           ← Electron 主程序（处理窗口）
+  preload.js        ← 安全通信脚本
+  index.html        ← 你原始的应用代码
+  package.json      ← 项目配置
+
+🚀 QUICK LAUNCH SCRIPTS (快速启动脚本)
+
+  ✓ start.sh        ← macOS/Linux: chmod +x start.sh && ./start.sh
+  ✓ start.bat       ← Windows: double click 双击即可
+
+📚 DOCUMENTATION (文档)
+
+  • START_HERE.md      ← 详细步骤
+  • SETUP_GUIDE.md     ← 完整指南
+  • 项目说明.txt       ← 中文总结
+  • README.md          ← 项目简介
+
+💾 DATA STORAGE (数据存储)
+
+  所有数据完全本地存储：
+  ✓ 排行榜数据
+  ✓ 错题记录
+  ✓ 游戏设置
+  
+  无需网络，100% 离线运行！
+
+🎁 BUILD STANDALONE APP (构建独立应用)
+
+  After npm install, run one of:
+  安装依赖后，运行以下命令之一：
+  
+  macOS:   npm run build-mac    → dist/国史科举*.dmg
+  Windows: npm run build-win    → dist/国史科举*.exe
+  Linux:   npm run build-linux  → dist/国史科举*.AppImage
+  
+  Share the result with others! 可以发送给别人使用！
+
+❓ TROUBLESHOOTING (故障排除)
+
+  Problem: "Node.js not found"
+  Solution: Install from https://nodejs.org/
+
+  Problem: npm install is slow
+  Solution: npm config set registry https://registry.npmmirror.com
+
+  Problem: App won't start
+  Solution: Delete node_modules and run npm install again
+
+🎮 FEATURES (功能完整保留)
+
+  ✅ 进京赶考 - 乡试/殿试竞答
+  ✅ 知识闪卡 - 历史知识闪卡
+  ✅ 经史典籍 - 复习资料查阅
+  ✅ 皇榜 - 排行榜
+  ✅ 错题阁 - 错题管理
+  ✅ 游戏设置 - 各项设置
+
+═══════════════════════════════════════════════════════════════════
+
+🎯 NEXT STEP: Open START_HERE.md or run "npm start"
+   下一步：打开 START_HERE.md 或运行 "npm start"
+
+═══════════════════════════════════════════════════════════════════
